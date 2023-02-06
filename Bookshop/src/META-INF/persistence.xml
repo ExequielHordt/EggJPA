@@ -3,8 +3,10 @@
   <persistence-unit name="BookshopPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>bookshop.entity.Author</class>
-    <class>bookshop.entity.Editorial</class>
     <class>bookshop.entity.Book</class>
+    <class>bookshop.entity.Editorial</class>
+    <class>bookshop.entity.Client</class>
+    <class>bookshop.entity.Borrow</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bookshop?autoReconnect=true&amp;useSSL=false"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

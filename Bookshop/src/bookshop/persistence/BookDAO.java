@@ -66,5 +66,15 @@ public class BookDAO extends DAO<Book> {
         return book;
 
     }
+    
+    //Update book
+    public void update (Book book){
+        
+        super.update(book);
+       
+        
+    }
+    
+    
 
 }

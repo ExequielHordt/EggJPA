@@ -1,10 +1,18 @@
 package bookshop;
 
 import bookshop.entity.Author;
+import bookshop.entity.Book;
+import bookshop.entity.Borrow;
+import bookshop.entity.Client;
 import bookshop.entity.Editorial;
 import bookshop.service.AuthorService;
 import bookshop.service.BookService;
+import bookshop.service.BorrowService;
+import bookshop.service.ClientService;
 import bookshop.service.EditorialService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -26,6 +34,8 @@ public class Bookshop {
             BookService bookService = new BookService();
             AuthorService authorService = new AuthorService();
             EditorialService editorialService = new EditorialService();
+            BorrowService borrowService = new BorrowService();
+            ClientService clientService = new ClientService();
 
             do {
 
@@ -35,7 +45,9 @@ public class Bookshop {
                 System.out.println("1)Libro");
                 System.out.println("2)Autor");
                 System.out.println("3)Editorial");
-                System.out.println("4)Salir");
+                System.out.println("4)Prestamo");
+                System.out.println("5)Cliente");
+                System.out.println("6)Salir");
                 System.out.print("Opcion: ");
                 option = read.next();
 
@@ -116,7 +128,6 @@ public class Bookshop {
                             System.out.println("Resultado");
                             System.out.println("*********");
                             bookService.byEditorial(name);
-                            option = "menu";
 
                         }
                         if (option.equalsIgnoreCase("5")) {
@@ -128,7 +139,8 @@ public class Bookshop {
                             isbn = read.nextLong();
                             System.out.println("Resultado");
                             System.out.println("*********");
-                            bookService.byISBN(isbn);
+                            System.out.println(bookService.byISBN(isbn));
+                            System.out.println("");
 
                         }
                         if (option.equalsIgnoreCase("6")) {
@@ -207,6 +219,113 @@ public class Bookshop {
 
                     case "4":
 
+                        System.out.println("Seccion-Prestamo");
+                        System.out.println("****************");
+                        System.out.println("Elija una opcion");
+                        System.out.println("****************");
+                        System.out.println("1)Registrar Prestamo (Alta)");
+                        System.out.println("2)Registrar Fecha Devolucion Libro");
+                        System.out.println("3)Volver al menu");
+                        System.out.print("Opcion: ");
+                        option = read.next();
+                        if (option.equalsIgnoreCase("1")) {
+                            
+                            Long isbn, id;
+                            int day, month, year;
+                            System.out.println("Fecha");
+                            System.out.println("*****");
+                            System.out.print("Dia: ");
+                            day = read.nextInt();
+                            System.out.print("Mes: ");
+                            month = read.nextInt();
+                            System.out.print("Año: ");
+                            year = read.nextInt();
+                            Date dateBorrow = new Date(year - 1900, month - 1, day);
+                            System.out.print("ISBN: ");
+                            isbn = read.nextLong();
+                            Book book = bookService.byISBN(isbn);
+                            System.out.print("DNI: ");
+                            id = read.nextLong();
+                            Client client = clientService.byId(id);
+                            book.setRemainingCopies(book.getRemainingCopies() - 1);
+                            book.setBorrowCopies(book.getBorrowCopies() + 1);
+                            bookService.update(book);
+                            borrowService.save(dateBorrow, book, client);
+                            System.out.println("Base de datos - Prestamo");
+                            System.out.println("**********");
+                            borrowService.print();
+                        }
+                        if (option.equalsIgnoreCase("2")) {
+
+                            
+                            Integer borrowId;
+                            Borrow borrow;
+                            int day, month, year;
+                            System.out.print("Prestamo id: ");
+                            borrowId = read.nextInt();
+                            borrow = borrowService.byId(borrowId);
+                            System.out.println("Fecha");
+                            System.out.println("***");
+                            System.out.print("Dia: ");
+                            day = read.nextInt();
+                            System.out.print("Mes: ");
+                            month = read.nextInt();
+                            System.out.print("Año: ");
+                            year = read.nextInt();
+                            Date dateReturning = new Date(year - 1900, month - 1 , day);
+                            borrow.getBook().setRemainingCopies(borrow.getBook().getRemainingCopies() + 1);
+                            borrow.getBook().setBorrowCopies(borrow.getBook().getBorrowCopies() - 1);
+                            bookService.update(borrow.getBook());
+                            borrowService.update(borrow, dateReturning);
+                            System.out.println("Resultado");
+                            System.out.println("*********");
+                            borrowService.print();
+                            
+                        }
+                        if (option.equalsIgnoreCase("3")) {
+                            System.out.println("Volviendo al menu principal...");
+                            System.out.println("");
+                            option = "menu";
+                        }
+                        break;
+
+                    case "5":
+
+                        System.out.println("Seccion-Cliente");
+                        System.out.println("***************");
+                        System.out.println("1)Registrar Cliente (Alta)");
+                        System.out.println("2)Volver al menu");
+                        System.out.print("Opcion: ");
+                        option = read.next();
+                        if (option.equalsIgnoreCase("1")) {
+
+                            String name, lastName, phoneNumber;
+                            Long id;
+                            System.out.print("Nombre: ");
+                            name = read.next();
+                            System.out.print("Apellido: ");
+                            lastName = read.next();
+                            System.out.print("DNI: ");
+                            id = read.nextLong();
+                            System.out.print("Telefono: ");
+                            phoneNumber = read.next();
+                            clientService.save(id, name, lastName, phoneNumber);
+                            System.out.println("DB - Cliente");
+                            System.out.println("**************");
+                            clientService.print();
+
+                        }
+
+                        if (option.equalsIgnoreCase("2")) {
+                            System.out.println("Volviendo al menu principal...");
+                            System.out.println("");
+                            option = "menu";
+
+                        }
+                        break;
+
+                    case "6":
+
                         System.out.println("Saliendo del programa...");
 
                         break;
@@ -217,7 +336,7 @@ public class Bookshop {
 
                         break;
                 }
-            } while (!option.equalsIgnoreCase("4"));
+            } while (!option.equalsIgnoreCase("6"));
             System.out.println("Fin del programa");
 
         } catch (Exception e) {

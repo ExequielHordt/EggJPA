@@ -92,7 +92,7 @@ public class BookService {
     }
 
     //Search by ISBN
-    public void byISBN(Long isbn) throws Exception {
+    public Book byISBN(Long isbn) throws Exception {
 
         try {
 
@@ -106,8 +106,7 @@ public class BookService {
                 throw new Exception("No existe registro");
             }
 
-            System.out.println(book);
-            System.out.println("");
+            return book;
 
         } catch (Exception e) {
 
@@ -257,6 +256,26 @@ public class BookService {
 
         }
 
+    }
+    
+    //Update book
+    public void update(Book book) throws Exception{
+        
+        try {
+            
+            if(book == null || book.isStatus() == false){
+            
+                throw new Exception("Debe indicar un libro");
+                
+            }
+            DAO.update(book);
+            
+        } catch (Exception e) {
+            
+            throw e;
+            
+        }
+    
     }
 
 }
